@@ -7,3 +7,5 @@ Commit more text
 Add one more branch to the master branch.
 
 Thank you
+
+Final changes in branch1
