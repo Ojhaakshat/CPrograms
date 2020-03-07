@@ -76,3 +76,5 @@ int main(){
 
     return 0;
 }
+
+Quicksort and merge sort is still left
