@@ -59,6 +59,89 @@ void insertionsort(int ar[],int n){
     }
 
 }
+//QUICKSORT
+int partition(int ar[],int start,int end){
+    int pivot=ar[start+(end-start)/2];
+    while(start<=end){
+        while(ar[start]<=pivot){
+            start++;
+        }
+        while(ar[end]>=pivot){
+            end--;
+        }
+        if(start<=end){
+            swap(ar[start],ar[end]);
+        }
+    }
+    return start;
+}
+void quicksort(int ar[],int start,int end){
+    if(start>=end){
+        return;
+    }
+    int index=partition(ar,start,end);
+
+    quicksort(ar,start,index-1);
+    quicksort(ar,index+1,end);
+}
+
+//MERGE SORT
+void merge(int arr[],int start,int end){
+	
+	int n = end-start+1;
+	int temp[n];
+
+	int mid = start + (end - start)/2;
+
+	int i = start;
+	int j = mid+1;
+
+	int k = 0;
+
+	while(i<=mid and j<=end){
+
+		if(arr[i]<=arr[j]){
+			temp[k] = arr[i];
+			i++;
+			k++;
+		}else{
+			temp[k] = arr[j];
+			k++;
+			j++;
+		}
+	}
+
+	while(i<=mid){
+		temp[k] = arr[i];
+		i++;
+		k++;
+	}
+
+	while(j<=end){
+		temp[k] = arr[j];
+		j++;
+		k++;
+	}
+
+	int pos = 0;
+	for(int x=start;x<=end;x++){
+		arr[x] = temp[pos];
+		pos++;
+	}
+}
+
+void mergeSort(int arr[],int start,int end){
+	if(start==end){
+		return;
+	}
+
+	int mid = start + (end - start)/2;
+
+	mergeSort(arr,start,mid);
+	mergeSort(arr,mid+1,end);
+
+	merge(arr,start,end);	
+}
 
 int main(){
 
@@ -77,4 +160,3 @@ int main(){
     return 0;
 }
 
-Quicksort and merge sort is still left
