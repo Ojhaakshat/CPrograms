@@ -33,6 +33,51 @@ int modInverse(int A,int M)
     return modularExponentiation(A,M-2,M);
 }
 
+void checkprime(int N) {
+        int count = 0;
+        for( int i = 1;i * i <=N;++i ) {
+             if( N % i == 0) {
+                 if( i * i == N )
+                         count++;
+                 else       // i < sqrt(N) and (N / i) > sqrt(N)
+                         count += 2;
+              }
+        }
+        if(count == 2)
+            cout << N << “ is a prime number.” << endl;
+        else
+            cout << N << “ is not a prime number.” << endl;
+ }
+
+vector<int> primes;
+bool isprime[1000005]={0}; 
+void seive() {
+    isprime[0]=isprime[1]=1;
+    for(int i=2;i<=1000000;i++){
+        if(isprime[i]==0){
+            for(int j=i*i;j<=1000000;j+=i){
+                isprime[j]=1;
+            }
+            primes.push_back(i);
+        }
+    }
+}
+
+
+//Factorization in root(n)//
+vector<int> factorize(int n) {
+    vector<int> res;
+    for (int i = 2; i * i <= n; ++i) {
+        while (n % i == 0) {
+            res.push_back(i);
+            n /= i;
+        }
+    }
+    if (n != 1) {
+        res.push_back(n);
+    }
+    return res;
+}
 
 int binaryExponentiation(int x,int n)
 {
