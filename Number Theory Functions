@@ -1,5 +1,5 @@
 Proof of gcd(a,b) = gcd(b,a%b)
-**************************************
+*****************************************
 First, notice that in each iteration of the Euclidean algorithm the second argument strictly decreases, therefore (since the arguments are always non-negative) the algorithm will always terminate.
 
 For the proof of correctness, we need to show that gcd(a,b)=gcd(b,amodb) for all a≥0, b>0.
