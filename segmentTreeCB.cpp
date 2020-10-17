@@ -25,6 +25,8 @@ using namespace __gnu_pbds;
 #define ps(x,y)     fixed<<setprecision(y)<<x
 #define w(x)        int x; cin>>x; while(x--)
 #define endl        '\n'
+#define MAX 100000
+
 int fp(int a, int n)
 {
 	int ans = 1;
@@ -68,25 +70,29 @@ void i_n()
 //*****************************************************************************
 
 
-void buildTree(int *arr, int s, int e, int *tree, int idx) {
+int arr[MAX + 1];
+int Tree[4 * MAX + 1];
+
+
+void buildTree(int s, int e, int idx) {
 	//Base Case
 	if (s == e) {
-		tree[idx] = arr[s];
+		Tree[idx] = arr[s];
 		return;
 	}
 	//Recursive Case
 	int mid  = s + (e - s) / 2;
-	buildTree(arr, s, mid, tree, 2 * idx);
-	buildTree(arr, mid + 1, e, tree, 2 * idx + 1);
+	buildTree(s, mid, 2 * idx);
+	buildTree(mid + 1, e, 2 * idx + 1);
 	// current node
-	tree[idx] = min(tree[2 * idx], tree[2 * idx + 1]);
+	Tree[idx] = min(Tree[2 * idx], Tree[2 * idx + 1]);
 }
 
 
-int query(int *tree, int s, int e, int qs, int qe, int idx) {
+int query(int s, int e, int qs, int qe, int idx) {
 	//Complete Overlap
 	if (s >= qs and e <= qe) {
-		return tree[idx];
+		return Tree[idx];
 	}
 	//No overlap
 	if (s > qe or e < qs) {
@@ -94,50 +100,50 @@ int query(int *tree, int s, int e, int qs, int qe, int idx) {
 	}
 	//Partial overlap - call both sides and update the current ans
 	int mid  = s + (e - s) / 2;
-	int leftAns = query(tree, s, mid, qs, qe, 2 * idx);
-	int rightAns = query(tree, mid + 1, e, qs, qe, 2 * idx + 1);
+	int leftAns = query(s, mid, qs, qe, 2 * idx);
+	int rightAns = query(mid + 1, e, qs, qe, 2 * idx + 1);
 	int ans = min(leftAns, rightAns);
 	return ans;
 }
 
 
 // index update
-void updateNode(int *tree, int s, int e, int idx, int pos, int increment) {
+void updateNode(int s, int e, int idx, int pos, int increment) {
 	//No overlap
 	if (s > pos or e < pos) {
 		return;
 	}
 	//leaf node - to be updated
 	if (s == e) {
-		tree[idx] += increment;
+		Tree[idx] += increment;
 		return;
 	}
 	//Partial overlap - left and right call
 	int mid  = s + (e - s) / 2;
-	updateNode(tree, s, mid, 2 * idx, pos, increment);
-	updateNode(tree, mid + 1, e, 2 * idx + 1, pos, increment);
+	updateNode(s, mid, 2 * idx, pos, increment);
+	updateNode(mid + 1, e, 2 * idx + 1, pos, increment);
 	//updating current node
-	tree[idx] = min(tree[2 * idx], tree[2 * idx + 1]);
+	Tree[idx] = min(Tree[2 * idx], Tree[2 * idx + 1]);
 }
 
 
 // range update
-void updateRange(int *tree, int s, int e, int l, int r, int idx, int increment) {
+void updateRange(int s, int e, int l, int r, int idx, int increment) {
 	//out of bound
 	if (e < l or s > r) {
 		return;
 	}
 	// leaf node
 	if (s == e) {
-		tree[idx] += increment;
+		Tree[idx] += increment;
 		return;
 	}
 	// both - partial and complete overlap
 	int mid = s + (e - s) / 2;
-	updateRange(tree, s, mid, l, r, 2 * idx, increment);
-	updateRange(tree, mid + 1, e, l, r, 2 * idx + 1, increment);
+	updateRange(s, mid, l, r, 2 * idx, increment);
+	updateRange(mid + 1, e, l, r, 2 * idx + 1, increment);
 
-	tree[idx] = min(tree[2 * idx], tree[2 * idx + 1]);
+	Tree[idx] = min(Tree[2 * idx], Tree[2 * idx + 1]);
 }
 
 
@@ -146,11 +152,11 @@ void updateRange(int *tree, int s, int e, int l, int r, int idx, int increment) 
 
 // LAZY UPDATE
 int lazy[100002];
-void updateRangeLazy(int *tree, int s, int e, int l, int r, int idx, int increment) {
+void updateRangeLazy(int s, int e, int l, int r, int idx, int increment) {
 	//First step - never go doen if you have a lazy value at node,
 	//first resolve it(update current node and pass lazy value to child nodes)
 	if (lazy[idx] != 0) {
-		tree[idx] += lazy[idx];
+		Tree[idx] += lazy[idx];
 		// if not a leaf node
 		if (s != e) {
 			lazy[2 * idx] += lazy[idx];
@@ -165,7 +171,7 @@ void updateRangeLazy(int *tree, int s, int e, int l, int r, int idx, int increme
 	}
 	//complete overlap
 	if (s >= l and e <= r) {
-		tree[idx] += increment;
+		Tree[idx] += increment;
 		if (s != e) {
 			lazy[2 * idx] += increment;
 			lazy[2 * idx + 1] += increment;
@@ -173,16 +179,16 @@ void updateRangeLazy(int *tree, int s, int e, int l, int r, int idx, int increme
 		return;
 	}
 	int mid = s + (e - s) / 2;
-	updateRangeLazy(tree, s, mid, l, r, 2 * idx, increment);
-	updateRangeLazy(tree, mid + 1, e, l, r, 2 * idx + 1, increment);
-	tree[idx] = min(tree[2 * idx], tree[2 * idx + 1]);
+	updateRangeLazy(s, mid, l, r, 2 * idx, increment);
+	updateRangeLazy(mid + 1, e, l, r, 2 * idx + 1, increment);
+	Tree[idx] = min(Tree[2 * idx], Tree[2 * idx + 1]);
 }
 
 
-int queryLazy(int *tree, int s, int e, int qs, int qe, int idx) {
+int queryLazy(int s, int e, int qs, int qe, int idx) {
 	//Resolve Lazy values
 	if (lazy[idx] != 0) {
-		tree[idx] += lazy[idx];
+		Tree[idx] += lazy[idx];
 		// if not a leaf node
 		if (s != e) {
 			lazy[2 * idx] += lazy[idx];
@@ -196,42 +202,44 @@ int queryLazy(int *tree, int s, int e, int qs, int qe, int idx) {
 	}
 	//Complete overlap
 	if (s >= qs and e <= qe) {
-		return tree[idx];
+		return Tree[idx];
 	}
 	int mid = s + (e - s) / 2;
-	int leftAns = queryLazy(tree, s, mid, qs, qe, 2 * idx);
-	int rightAns = queryLazy(tree, mid + 1, e, qs, qe, 2 * idx + 1);
+	int leftAns = queryLazy(s, mid, qs, qe, 2 * idx);
+	int rightAns = queryLazy(mid + 1, e, qs, qe, 2 * idx + 1);
 	return min(leftAns, rightAns);
 
 }
 
 
-// 0 based indexing for arr and 1 based for segment tree array
+// 0 based indexing for arr and 1 based for segment Tree array
 
 main() {
 
 	i_n();
-	int arr[] = {1, 3, 2, -5, 6, 4};
-	int n = sizeof(arr) / sizeof(int);
-	int *tree = new int[4 * n + 1];
-	buildTree(arr, 0, n - 1, tree, 1);
+	int n, q;
+	cin >> n >> q;
+	rep(i, 0, n) {
+		cin >> arr[i];
+	}
+	buildTree(0, n - 1, 1);
 	// Rep(i, 1, 13) {
-	// 	cout << tree[i] << " ";
+	// 	cout << Tree[i] << " ";
 	// }
 	// cout << endl;
 
-	// int i, increment;
-	// cin >> i >> increment;
-	// updateNode(tree, 0, n - 1, 1, i, increment);
+	int i, increment;
+	cin >> i >> increment;
+	updateNode(0, n - 1, 1, i, increment);
 	// int lx, rx, increment;
 	// cin >> lx >> rx >> increment;
-	// updateRange(tree, 0, n - 1, lx, rx, 1, increment);
-	int lx, rx, increment;
-	cin >> lx >> rx >> increment;
-	updateRangeLazy(tree, 0, n - 1, lx, rx, 1, increment);
+	// updateRange(0, n - 1, lx, rx, 1, increment);
+	// int lx, rx, increment;
+	// cin >> lx >> rx >> increment;
+	// updateRangeLazy(0, n - 1, lx, rx, 1, increment);
 
 	int l, r;
 	cin >> l >> r;
-	cout << queryLazy(tree, 0, n - 1, l, r, 1) << endl;
-  
+	cout << queryLazy(0, n - 1, l, r, 1) << endl;
+
 }
