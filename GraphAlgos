@@ -1,0 +1,221 @@
+**********************  ARTICULATION POINTS ********************************
+#include<bits/stdc++.h>
+
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+
+#define rep(i,a,b)  for(int i = a; i < b; i++)
+#define repr(i,a,b)  for(int i = a; i >= b; i--)
+#define Rep(i,a,b)  for(int i = a; i <= b; i++)
+#define ff          first
+#define ss          second
+#define int         long long
+#define pb          push_back
+#define mp          make_pair
+#define pii         pair<int,int>
+#define vi          vector <int>
+#define mii         map <int,int>
+#define mxhi        priority_queue<int>
+#define mnhi        priority_queue<int,vi,greater<int> >
+#define mod         1000000007
+#define setbits(x)  __builtin_popcountll(x)
+#define zrobits(x)  __builtin_ctzll(x)   //no of zero bits befor the first set bits
+#define inf         1e18
+#define ps(x,y)     fixed<<setprecision(y)<<x
+#define w(x)        int x; cin>>x; while(x--)
+#define endl        '\n'
+int countSetBits(int x)
+{
+	int count = 0;
+	while (x)
+	{
+		x &= (x - 1);
+		count++;
+	}
+	return count;
+}
+typedef tree<int, null_type, less<int>, rb_tree_tag,
+        tree_order_statistics_node_update>
+        PBDS;
+int gcd(int a, int b) { return (b == 0) ? a : gcd(b, a % b); }
+int lcm(int a, int b) { return (a / gcd(a, b)) * b; }
+void i_n()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+#ifndef ONLINE_JUDGE
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+#endif
+}
+int n, m;
+map<int, list<int>> adj;
+map<int, bool> visited;
+int visitedTime[100001];
+int lowTime[100001];
+bool isAp[100001];
+int Time;
+void dfs(int node, int p) {
+	int children = 0;
+	visitedTime[node] = lowTime[node] = ++Time;
+	visited[node] = true;
+	for (auto child : adj[node]) {
+		if (child == p) continue;
+		if (!visited[child]) {
+			children++;
+			dfs(child, node);
+			lowTime[node] = min(lowTime[node], lowTime[child]);
+			if (p == node and children > 1) {
+				isAp[node] = true;
+			}
+			if (p != node and lowTime[child] >= visitedTime[node]) {
+				isAp[node] = true;
+			}
+		} else {
+			lowTime[node] = min(lowTime[node], visitedTime[child]);
+		}
+	}
+}
+void ap() {
+	rep(i, 0, n) {
+		if (!visited[i]) {
+			dfs(i, i);
+		}
+	}
+}
+main() {
+	i_n();
+	cin >> n >> m;
+	rep(i, 0, m) {
+		int a, b;
+		cin >> a >> b;
+		a--, b--;
+		adj[a].pb(b);
+		adj[b].pb(a);
+	}
+	ap();
+	rep(i, 0, n) {
+		cout << isAp[i] << " ";
+	}
+}
+
+**************************** STRONGLY CONNECTED COMPONENTS ************************
+
+#include<bits/stdc++.h>
+
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+
+#define rep(i,a,b)  for(int i = a; i < b; i++)
+#define repr(i,a,b)  for(int i = a; i >= b; i--)
+#define Rep(i,a,b)  for(int i = a; i <= b; i++)
+#define ff          first
+#define ss          second
+#define int         long long
+#define pb          push_back
+#define mp          make_pair
+#define pii         pair<int,int>
+#define vi          vector <int>
+#define mii         map <int,int>
+#define mxhi        priority_queue<int>
+#define mnhi        priority_queue<int,vi,greater<int> >
+#define mod         1000000007
+#define setbits(x)  __builtin_popcountll(x)
+#define zrobits(x)  __builtin_ctzll(x)   //no of zero bits befor the first set bits
+#define inf         1e18
+#define ps(x,y)     fixed<<setprecision(y)<<x
+#define w(x)        int x; cin>>x; while(x--)
+#define endl        '\n'
+int countSetBits(int x)
+{
+	int count = 0;
+	while (x)
+	{
+		x &= (x - 1);
+		count++;
+	}
+	return count;
+}
+typedef tree<int, null_type, less<int>, rb_tree_tag,
+        tree_order_statistics_node_update>
+        PBDS;
+int gcd(int a, int b) { return (b == 0) ? a : gcd(b, a % b); }
+int lcm(int a, int b) { return (a / gcd(a, b)) * b; }
+void i_n()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+#ifndef ONLINE_JUDGE
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+#endif
+}
+int n, m;
+map<int, list<int>> adj;
+map<int, list<int>> revAdj;
+map<int, bool> visited;
+stack<int> s;
+void stackpushdfs(int node, int p) {
+	visited[node] = true;
+	for (auto child : adj[node]) {
+		if (!visited[child]) {
+			stackpushdfs(child, node);
+		}
+	}
+	s.push(node);
+}
+
+void reverseGraph() {
+	rep(i, 0, n) {
+		for (auto child : adj[i]) {
+			revAdj[child].pb(i);
+		}
+	}
+}
+void dfsOnRev(int node) {
+	visited[node] = true;
+	cout << node << " ";
+	for (auto child : revAdj[node]) {
+		if (!visited[child]) {
+			dfsOnRev(child);
+		}
+	}
+
+}
+void stronglyconnected() {
+	rep(i, 0, n) {
+		if (!visited[i]) {
+			stackpushdfs(i, i);
+		}
+	}
+	reverseGraph();
+	visited.clear();
+	while (!s.empty()) {
+		int ele = s.top();
+		if (!visited[ele]) {
+			dfsOnRev(ele);
+			cout << endl;
+		}
+		s.pop();
+	}
+}
+
+main() {
+	i_n();
+	cin >> n >> m;
+	rep(i, 0, m) {
+		int a, b;
+		cin >> a >> b;
+		a--, b--;
+		adj[a].pb(b);
+	}
+	stronglyconnected();
+}
