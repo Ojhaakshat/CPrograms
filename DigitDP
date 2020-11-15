@@ -1,0 +1,108 @@
+#include<bits/stdc++.h>
+
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+
+#define rep(i,a,b)  for(int i = a; i < b; i++)
+#define repr(i,a,b)  for(int i = a; i >= b; i--)
+#define Rep(i,a,b)  for(int i = a; i <= b; i++)
+#define ff          first
+#define ss          second
+#define int         long long
+#define pb          push_back
+#define mp          make_pair
+#define pii         pair<int,int>
+#define vi          vector <int>
+#define mii         map <int,int>
+#define mxhi        priority_queue<int>
+#define mnhi        priority_queue<int,vi,greater<int> >
+#define mod         1000000007
+#define setbits(x)  __builtin_popcountll(x)
+#define zrobits(x)  __builtin_ctzll(x)   //no of zero bits befor the first set bits
+#define inf         1e18
+#define ps(x,y)     fixed<<setprecision(y)<<x
+#define w(x)        int x; cin>>x; while(x--)
+#define endl        '\n'
+int countSetBits(int x)
+{
+	int count = 0;
+	while (x)
+	{
+		x &= (x - 1);
+		count++;
+	}
+	return count;
+}
+typedef tree<int, null_type, less<int>, rb_tree_tag,
+        tree_order_statistics_node_update>
+        PBDS;
+int gcd(int a, int b) { return (b == 0) ? a : gcd(b, a % b); }
+int lcm(int a, int b) { return (a / gcd(a, b)) * b; }
+void i_n()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+#ifndef ONLINE_JUDGE
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+#endif
+}
+int getSumUptonthdigit_no(int pos, int n, int sum) {
+	if (pos > n) {
+		return sum;
+	}
+	int res = 0;
+	for (int i = 0; i <= 9; i++) {
+		res += getSumUptonthdigit_no(pos + 1, n, sum + i);
+	}
+	return res;
+}
+// flag -> if there is previous place filled within limit
+int arr[100001];
+int dp[11][100][2];
+int getSumUpton(int pos, int n, int sum , bool flag) {
+	if (pos > n) {
+		return sum;
+	}
+	if (dp[pos][sum][flag] != -1) return dp[pos][sum][flag];
+	int res = 0;
+	int limit = 9;
+	if (!flag) limit = arr[pos];
+	for (int i = 0; i <= limit; i++) {
+		if (flag or i < limit) {
+			res += getSumUpton(pos + 1, n, sum + i, true);
+		} else {
+			res += getSumUpton(pos + 1, n, sum + i, false);
+		}
+	}
+	return dp[pos][sum][flag] = res;
+}
+main() {
+	i_n();
+	while (true) {
+		string a, b;
+		cin >> a >> b;
+		int int_a = stoi(a), int_b = stoi(b);
+		if (int_b == -1 and int_a == -1) break;
+		// b = to_string(b);
+		if (int_a != 0) {
+			a = to_string(int_a - 1);
+		}
+		memset(dp, -1, sizeof(dp));
+		rep(i, 0, b.length()) {
+			arr[i + 1] = b[i] - '0';
+		}
+		int R = getSumUpton(1, b.length(), 0, false);
+		memset(dp, -1, sizeof(dp));
+		rep(i, 0, a.length()) {
+			arr[i + 1] = a[i] - '0';
+		}
+		int L = getSumUpton(1, a.length(), 0, false);
+		cout << R - L << endl;
+
+	}
+}
