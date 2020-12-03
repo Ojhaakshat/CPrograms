@@ -1,3 +1,39 @@
+********************************************Minimum swaps to sort an array consisting of permutation of n***************************
+
+int ans = 0, n;
+int arr[1001];
+int visited[1001];
+void dfs(int x) {
+	visited[x] = true;
+	if (visited[arr[x]]) {
+		ans++;
+	}
+	else {
+		dfs(arr[x]);
+	}
+	// if (x != arr[x - 1]) ans++;
+}
+int32_t main()
+{
+	i_n();
+	// map<int,int> m;
+	int n;
+	cin >> n;
+	// int arr[n];
+	Rep(i, 1, n) {
+		cin >> arr[i];
+	}
+	Rep(i, 1, n) {
+		if (!visited[i]) {
+			dfs(i);
+		}
+	}
+	cout << n - ans << endl;
+}
+
+
+
+***********************************mergeksortedarrays*****************************************************************
 #include<bits/stdc++.h>
 using namespace std;
 
