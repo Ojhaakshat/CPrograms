@@ -134,6 +134,67 @@ vector<int> factorize(int n) {
     return res;
 }
 
+
+
+Prime Factorisation
+Time Complexity O(sqrt(n))
+void (int n) {
+        vi v;
+		for (int i = 2; i * i <= n; i++) {
+			if (n % i == 0) {
+				while (n % i == 0) {
+					n /= i;
+				}
+				v.pb(i);
+			}
+		}
+		if (n > 1) v.pb(n);
+		for (auto e : v) {
+			cout << e << " ";
+		}
+		cout << endl;
+
+}
+
+Time Complexity O(log(n)) - For queries, as it stores smallest prime factor for each number upto 10^7 once in O(N) space complexity, 
+then can calculate prome factors for number upto 10^7 for mltiple queries in O(log n)
+int MAX = 10000001;
+vi spf(MAX, 0);
+void sieve() {
+    
+	spf[1] = 1;
+	
+	for(int i = 2; i*i < MAX; i++) {
+		if(spf[i] == 0) {
+			spf[i] = i;
+			for(int j = i*i; j < MAX; j+=i) {
+				if(spf[j] == 0) {
+					spf[j] = i;
+				}
+			}
+		}
+
+	}
+}
+void generateprimefactorization(){
+w(t) {
+		int n;
+		cin >> n;
+		vi ans;
+		while (n > 1) {
+			ans.pb(spf[n]);
+			n /= spf[n];
+		}
+		for (auto e : ans) {
+			cout << e << " ";
+		}
+		cout << endl;
+	}
+}
+
+***************************************************************************
+
+
 int binaryExponentiation(int x,int n)
 {
     if(n==0)
