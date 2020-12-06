@@ -102,6 +102,8 @@ void checkprime(int N) {
             cout << N << “ is not a prime number.” << endl;
  }
 
+
+Complwxity (sieve of erathosenes) O(n)*log(log(n))
 vector<int> primes;
 bool isprime[1000005]={0}; 
 void seive() {
