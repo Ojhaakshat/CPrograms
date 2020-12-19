@@ -1,1 +1,67 @@
+************** DFS ********************************
+map<int, bool> visited;
+map<int, list<int>> adj;
+stack<int> s;
+void dfs(int u) {
+	visited[u] = true;
+	for (auto child : adj[u]) {
+		if (!visited[child]) {
+			dfs(child);
+		}
+	}
+	s.push(u);
+}
+void topologicalSort() {
+	visited.clear();
+	rep(i, 0, n) {
+		if (!visited[arr[i]]) {
+			dfs(arr[i]);
+		}
+	}
+	rep(i, 0, n) {
+		cout << s.top () << " ";
+		s.pop();
+	}
 
+}
+
+
+*************** BFS ***************************
+map<int, bool> present;
+map<int, list<int>> adj;
+void topologicalSortBFS() {
+	unordered_map<int, int> indegree;
+	queue<int> q;
+	for (auto node : adj) {
+		indegree[node.first] = 0;
+	}
+	for (auto node : adj) {
+		for (int neighbor : node.second) {
+			indegree[neighbor]++;
+		}
+	}
+	for (auto node : indegree) {
+		int val = node.first;
+		int count = node.second;
+		if (count == 0) {
+			q.push(val);
+		}
+	}
+	while (!q.empty()) {
+
+		int node = q.front();
+		q.pop();
+
+		cout << node << " ";
+
+		for (int neighbor : adj[node]) {
+			indegree[neighbor]--;
+
+			if (indegree[neighbor] == 0) {
+				q.push(neighbor);
+			}
+		}
+	}
+
+	cout << endl;
+}
