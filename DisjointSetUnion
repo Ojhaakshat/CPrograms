@@ -1,0 +1,38 @@
+//********* Path Compression and Union By size optimization ****************
+class Disjointset {
+	vector<int> parent, size;
+	int n, connected;
+public :
+	Disjointset(int n) : n(n) {
+		parent.resize(n);
+		size.resize(n);
+		for (int i = 0; i < n; i++) {
+			parent[i] = i;
+			size[i] = 1;
+		}
+		connected = n;
+	}
+	int findparent(int a) {
+		if (a == parent[a]) {
+			return a;
+		}
+		return parent[a] = findparent(parent[a]);
+	}
+	void join(int a, int b) {
+		int x = findparent(a);
+		int y = findparent(b);
+		if (x == y) {
+			return;
+		}
+		connected--;
+		if (size[x] < size[y]) {
+			swap(x, y);
+		}
+		size[y] += size[x];
+		size[x] = 0;
+		parent[x] = y;
+	}
+	int getSize(int k) {
+		return size[findparent(k)];
+	}
+};
