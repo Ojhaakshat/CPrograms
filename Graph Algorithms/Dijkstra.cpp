@@ -4,12 +4,14 @@ int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         for(int i = 0; i < times.size(); i++) {
             adj[times[i][0]].push_back({times[i][1],times[i][2]});
         }
+//         int parent[n+1];
         bool visit[n+1];
         memset(visit, false, sizeof(visit));
         vector<int> time(n+1,INT_MAX);
         pq.push({0,k});
         visit[k] = true;
         time[k] = 0;
+//         parent[k] = -1;
         while(!pq.empty()) {
             auto f = pq.top();
             pq.pop();
@@ -17,6 +19,7 @@ int networkDelayTime(vector<vector<int>>& times, int n, int k) {
             for(auto child : adj[f.second]) {
                 if(visit[child.first] == false and time[child.first] > f.first + child.second) {
                     time[child.first] = f.first+child.second;
+//                     parent[child.first] = f.second;
                     pq.push({f.first+child.second,child.first});
                 }
             }
@@ -30,3 +33,4 @@ int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         }
         return ans;
     }
+// to get path we can create a parent array and wenever a distance is updated we can updated the parent array(base case parent[k] = -1)
