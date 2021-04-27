@@ -1,3 +1,7 @@
+// to get path we can create a parent array and wenever a distance is updated we can updated the parent array(base case parent[k] = -1)
+// Time complexity O(ElogE) or 2*O(ElogV) in the heap implementation, as potentially every edge gets added to the heap 
+// Space Complexity: O(N+E), the size of the graph (O(E)), plus the size of the other objects used (O(N))
+//Limitation - Cannot be used for negative edge weights
 int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         unordered_map<int,list<pair<int,int>>> adj;
         priority_queue<pair<int,int>,vector<pair<int,int>>, greater<pair<int,int>>> pq;
@@ -33,4 +37,4 @@ int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         }
         return ans;
     }
-// to get path we can create a parent array and wenever a distance is updated we can updated the parent array(base case parent[k] = -1)
+
