@@ -102,7 +102,42 @@ main() {
 		cout << isAp[i] << " ";
 	}
 }
-
+*****************************ARTICULATION EDGES ***********************************
+class Solution {
+public:
+    vector<vector<int>> ans;
+    unordered_map<int, list<int>> adj;
+    int time = 0;
+    void dfs(int u,vector<int>&low,vector<int>&visited,int p) {
+        low[u] = visited[u] = time++;
+        for(auto child : adj[u]) {
+            if(visited[child] == -1) {
+                // parent[child] = u;
+                dfs(child,low,visited,u);
+                low[u] = min(low[u],low[child]);
+                if(low[child] > visited[u]) {
+                    ans.push_back({u,child});
+                }
+            } else if(p != child) {
+                low[u] = min(low[u], visited[child]);
+            }
+        }
+    }
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        vector<int> low(n), visited(n,-1), parent(n,-1);
+        for(int i = 0; i < connections.size(); i++) {
+            adj[connections[i][0]].push_back(connections[i][1]);
+            adj[connections[i][1]].push_back(connections[i][0]);
+        }
+        for(int i = 0; i < n; i++) {
+            if(visited[i] == -1) {
+                dfs(i,low,visited,i);
+                // dfs(i,low,visited,parent)
+            }
+        }
+        return ans;
+    }
+};
 **************************** STRONGLY CONNECTED COMPONENTS ************************
 
 #include<bits/stdc++.h>
