@@ -1,4 +1,6 @@
-    bool isCyclicUndirectedUsing_BFS(T src){
+********** UNDIRECTED *******************    
+
+bool isCyclicUndirectedUsing_BFS(T src){
         unordered_map<T,bool> visited;
         unordered_map<T,T> parent;
         visited[src]=true;
@@ -20,6 +22,40 @@
         }
         return false; 
     }
+    // DFS APPROACH 
+    bool visited[100001];
+    bool dfs(int s, int p, vector<int> adj[]) {
+        if(visited[s]) {
+            return true;
+        }
+        visited[s] = true;
+        for(auto child : adj[s]) {
+            if(child != p) {
+                bool ans = dfs(child,s,adj);
+                if(ans) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    //Function to detect cycle in an undirected graph.
+	bool isCycle(int V, vector<int>adj[])
+	{
+	    // Code here
+	    memset(visited, false, sizeof visited);
+	    for(int i = 0; i < V; i++) {
+	        if(!visited[i]) {
+	            bool ans = dfs(i,-1,adj);
+	            if(ans) {
+	                return true;
+	            }
+	        }
+	    }
+	    return false;
+	}
+
+************ DIRECTED **********************
     bool isCyclicDirectedUsing_DFShelper(T node,unordered_map<T,bool> &visited,unordered_map<T,bool> &instack){
         visited[node]=true;
         instack[node]=true;
