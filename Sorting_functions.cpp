@@ -1,3 +1,6 @@
+
+//sorting funtions
+
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -20,6 +23,7 @@ void bubblesort(int ar[],int n){
         }
     
     }
+    
     counter++;
     }
 
